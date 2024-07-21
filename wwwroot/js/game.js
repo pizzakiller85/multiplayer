@@ -1,10 +1,52 @@
-﻿const canvas = document.getElementById('gameCanvas');
+﻿"use strict";
+var shareStateTimeInterval = 10;
+var userid = createHEXColor();
+function createHEXColor() {
+    let color = Math.floor(Math.random() * 16777215).toString(16);
+    return color.padStart(6, '0');
+}
+function getRandomHexColor() {
+    let color = Math.floor(Math.random() * 16777215).toString(16);
+    return '#' + color.padStart(6, '0');
+}
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+    console.log("aa");
+connection.on("AllUserPositions", function (positions) {
+    var allPositions = JSON.parse(positions);
+    drawAll(allPositions);
+});
+
+connection.start().then(function () {
+    console.log("start interval");
+    window.setInterval(shareState, shareStateTimeInterval);
+}).catch(function (err) {
+    return console.error(err.toString());
+});
+
+function shareState() {
+    console.log("test:" + userid + " x:" + x + " y:" + y);
+    movePlayer();
+    connection.invoke("ShareUserPosition", userid.toString(), x, y).catch(function (err) {
+        return console.error(err.toString());
+    });
+}
+
+const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let max = 200;
 let x = canvas.width / 2 + Math.floor(Math.random() * max);
 let y = canvas.height / 2 + Math.floor(Math.random() * max);
 const size = 20;
-const speed = 3;
+const speed = 1;
+var speedX = 0;
+var speedY = 0;
+const maxSpeed = 10;
+var acc = 0.12;
+var friction = 0.98;
+
+let keysPressed = {};
 
 function drawAll(allPostions) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -17,22 +59,29 @@ function drawAll(allPostions) {
         ctx.fillRect(x, y, size, size);
     });
 }
+function movePlayer() {
+    if (keysPressed.ArrowUp) speedY -= acc;
+    if (keysPressed.ArrowDown) speedY += acc; 
+    if (keysPressed.ArrowLeft) speedX -= acc; 
+    if (keysPressed.ArrowRight) speedX += acc;  
 
-function moveSquare(e) {
-    switch (e.key) {
-        case 'ArrowUp':
-            y -= speed;
-            break;
-        case 'ArrowDown':
-            y += speed;
-            break;
-        case 'ArrowLeft':
-            x -= speed;
-            break;
-        case 'ArrowRight':
-            x += speed;
-            break;
-    }
+    speedX *= friction;
+    speedY *= friction;
+
+    speedX = Math.max(Math.min(speedX, maxSpeed), -maxSpeed);
+    speedY = Math.max(Math.min(speedY, maxSpeed), -maxSpeed);
+
+    x += speedX;
+    y += speedY;
 }
 
-document.addEventListener('keydown', moveSquare);
+document.addEventListener('keydown', (event) => {
+    keysPressed[event.code] = true;
+});
+
+document.addEventListener('keyup', (event) => {
+    keysPressed[event.code] = false;
+});
+
+var prevDirX = 0;
+document.addEventListener('keydown', moveSquare); 
