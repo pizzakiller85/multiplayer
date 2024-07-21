@@ -4,25 +4,18 @@ let max = 200;
 let x = canvas.width / 2 + Math.floor(Math.random() * max);
 let y = canvas.height / 2 + Math.floor(Math.random() * max);
 const size = 20;
-const speed = 10;
-
+const speed = 3;
 
 function drawAll(allPostions) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     allPostions.forEach(function (val, key, map) {
-        ctx.fillStyle = '#'+ val.Key;//rgb(255, 200, 0);
+        ctx.fillStyle = '#'+ val.Key;
         
         var x = val.Value.x;
         var y = val.Value.y;
         
         ctx.fillRect(x, y, size, size);
     });
-}
-
-function drawSquare(color) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, size, size);
 }
 
 function moveSquare(e) {
@@ -43,4 +36,3 @@ function moveSquare(e) {
 }
 
 document.addEventListener('keydown', moveSquare);
-drawSquare();
