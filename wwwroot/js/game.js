@@ -75,6 +75,13 @@ function movePlayer() {
 
     x += speedX;
     y += speedY;
+
+    if (x < 0) {
+        x = 0;
+    }
+    if (y < 0) {
+        y = 0;
+    }
 }
 
 document.addEventListener('keydown', (event) => {
