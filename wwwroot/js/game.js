@@ -13,6 +13,8 @@ const maxSpeed = 10;
 var acc = 0.12;
 var friction = 0.98;
 
+var canvasHeight = 600; // html has the actual canvas value
+
 let keysPressed = {};
 
 
@@ -79,8 +81,14 @@ function movePlayer() {
     if (x < 0) {
         x = 0;
     }
+    if (x > canvasHeight - size ) {
+        x = canvasHeight - size;
+    }
     if (y < 0) {
         y = 0;
+    }
+    if (y > canvasHeight - size ) {
+        y = canvasHeight - size;
     }
 }
 
