@@ -1,5 +1,5 @@
 ﻿"use strict";
-var shareStateTimeInterval = 100;
+var shareStateTimeInterval = 10;
 var userid = createHEXColor();
 function createHEXColor() {
     let color = Math.floor(Math.random() * 16777215).toString(16);
