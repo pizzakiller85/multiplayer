@@ -80,5 +80,3 @@ document.addEventListener('keyup', (event) => {
     keysPressed[event.code] = false;
 });
 
-var prevDirX = 0;
-document.addEventListener('keydown', moveSquare); 
