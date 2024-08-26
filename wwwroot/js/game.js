@@ -1,5 +1,5 @@
 ﻿"use strict";
-var shareStateTimeInterval = 10;
+var shareStateTimeInterval = 100;
 var userid = createHEXColor();
 function createHEXColor() {
     let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -11,8 +11,6 @@ function getRandomHexColor() {
 }
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-
-    console.log("aa");
 connection.on("AllUserPositions", function (positions) {
     var allPositions = JSON.parse(positions);
     drawAll(allPositions);
@@ -26,7 +24,6 @@ connection.start().then(function () {
 });
 
 function shareState() {
-    console.log("test:" + userid + " x:" + x + " y:" + y);
     movePlayer();
     connection.invoke("ShareUserPosition", userid.toString(), x, y).catch(function (err) {
         return console.error(err.toString());
