@@ -17,6 +17,11 @@ var canvasHeight = 600; // html has the actual canvas value
 
 let keysPressed = {};
 
+let latency = 3;
+
+let send;
+let recieve;
+
 
 var userid = createHEXColor();
 function createHEXColor() {
@@ -32,6 +37,8 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 // step 2 get all positions
 connection.on("AllUserPositions", function (positions) {
+    recieve = performance.now();
+    latency = Math.round(recieve - send);
     var allPositions = JSON.parse(positions);
     drawAll(allPositions);
 });
@@ -46,6 +53,9 @@ connection.start().then(function () {
 
 // main loop --  step 1
 function shareState() {
+
+    document.getElementById("ping").innerHTML = latency + "ms";
+    send = performance.now();
     movePlayer();
     connection.invoke("ShareUserPosition", userid.toString(), x, y).catch(function (err) {
         return console.error(err.toString());
