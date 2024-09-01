@@ -47,7 +47,7 @@ connection.on("AllUserPositions", function (positions) {
     latencyCount++;
     if (latencyCount >= 60) {
         latencyCount = 0;
-        document.getElementById("pingAvg").innerHTML = latencyAvg / 60 + "ms";
+        document.getElementById("pingAvg").innerHTML = (latencyAvg / 60).toFixed(2) + "ms";
 
         latencyAvg = 0
     }
