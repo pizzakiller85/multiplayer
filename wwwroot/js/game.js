@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 let max = 200;
 let x = canvas.width / 2 + Math.floor(Math.random() * max);
 let y = canvas.height / 2 + Math.floor(Math.random() * max);
-const size = 10;
+const size = 20;
 const speed = 1;
 var speedX = 0;
 var speedY = 0;
@@ -73,18 +73,41 @@ function shareState() {
         return console.error(err.toString());
     });
 }
+let fixX = 200;
+let fixY = 200;
+function tempFixedCircle() {
+    ctx.beginPath();
+    ctx.fillStyle = '#000000';
+
+    ctx.arc(fixX, fixY, size, 0, 2 * Math.PI);
+
+    ctx.fill();
+    ctx.closePath();
+}
 
 function drawAll(allPostions) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    tempFixedCircle();
     allPostions.forEach(function (val, key, map) {
+        ctx.beginPath();
         ctx.fillStyle = '#'+ val.Key;
         
         var x = val.Value.x;
         var y = val.Value.y;
+
+        ctx.arc(x, y, size, 0, 2 * Math.PI);
         
-        ctx.fillRect(x, y, size, size);
+        ctx.fill();
+        ctx.closePath();
+
+        //ctx.fillRect(x, y, 1, 1);
     });
 }
+function distance(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+
 function movePlayer() {
     if (keysPressed.ArrowUp) speedY -= acc;
     if (keysPressed.ArrowDown) speedY += acc; 
@@ -99,6 +122,26 @@ function movePlayer() {
 
     x += speedX;
     y += speedY;
+
+    var dist = distance(fixX, fixY, x, y);
+    if (dist < 100) {
+        let vCollision = { x: fixX - x, y: fixY - y };
+
+        let vC = { x: vCollision.x / dist, y: vCollision.y / dist };
+        console.log(vC)
+         
+        x=x - vC.x;
+        y=y - vC.y;
+        fixX=fixX - vC.x;
+        fixY = fixY - vC.y;
+
+        console.log(fixX);
+        console.log(fixY);
+
+        //fixX--;
+    }
+
+    //console.log(dist);
 
     if (x < 0) {
         x = 0;
