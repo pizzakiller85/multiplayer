@@ -124,16 +124,17 @@ function movePlayer() {
     y += speedY;
 
     var dist = distance(fixX, fixY, x, y);
-    if (dist < 100) {
+    //if (dist < size * 2) {
+    if (false) {
         let vCollision = { x: fixX - x, y: fixY - y };
 
         let vC = { x: vCollision.x / dist, y: vCollision.y / dist };
         console.log(vC)
-         
+        
         x=x - vC.x;
         y=y - vC.y;
-        fixX=fixX - vC.x;
-        fixY = fixY - vC.y;
+        fixX=fixX + vC.x;
+        fixY = fixY + vC.y;
 
         console.log(fixX);
         console.log(fixY);
