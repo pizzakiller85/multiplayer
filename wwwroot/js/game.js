@@ -51,6 +51,7 @@ connection.on("AllUserPositions", function (positions) {
 
         latencyAvg = 0
     }
+    allPositions
     var allPositions = JSON.parse(positions);
     drawAll(allPositions);
 });
@@ -69,7 +70,9 @@ function shareState() {
     document.getElementById("ping").innerHTML = latency + "ms";
     send = performance.now();
     movePlayer();
-    connection.invoke("ShareUserPosition", userid.toString(), x, y).catch(function (err) {
+    connection.invoke("ShareUserPosition", userid.toString(), x, y,
+        keysPressed.ArrowUp, keysPressed.ArrowRight, keysPressed.ArrowDown, keysPressed.ArrowLeft
+    ).catch(function (err) {
         return console.error(err.toString());
     });
 }
@@ -88,7 +91,9 @@ function tempFixedCircle() {
 function drawAll(allPostions) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     tempFixedCircle();
+    var count = 0;
     allPostions.forEach(function (val, key, map) {
+        count++;
         ctx.beginPath();
         ctx.fillStyle = '#'+ val.Key;
         
@@ -102,6 +107,9 @@ function drawAll(allPostions) {
 
         //ctx.fillRect(x, y, 1, 1);
     });
+
+    document.getElementById("playerCount").innerHTML = count;
+    
 }
 function distance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
@@ -124,8 +132,8 @@ function movePlayer() {
     y += speedY;
 
     var dist = distance(fixX, fixY, x, y);
-    //if (dist < size * 2) {
-    if (false) {
+    if (dist < size * 2) {
+    //if (false) {
         let vCollision = { x: fixX - x, y: fixY - y };
 
         let vC = { x: vCollision.x / dist, y: vCollision.y / dist };
