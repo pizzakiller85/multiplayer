@@ -70,9 +70,8 @@ function shareState() {
     document.getElementById("ping").innerHTML = latency + "ms";
     send = performance.now();
     movePlayer();
-    connection.invoke("ShareUserPosition", userid.toString(), x, y,
-        keysPressed.ArrowUp, keysPressed.ArrowRight, keysPressed.ArrowDown, keysPressed.ArrowLeft
-    ).catch(function (err) {
+    connection.invoke("ShareUserPosition", userid.toString(), x, y)
+        .catch(function (err) {
         return console.error(err.toString());
     });
 }
